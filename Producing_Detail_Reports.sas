@@ -1,5 +1,5 @@
   	/*the var statment grabs the columns with the corresponding name
-  	sum request total for the NUMERIC variable and places it at the bottom of the field.*/
+  	sum request total for the NUMERIC variable and places it at the bottom of the field*/
 proc print data=orion.sales;
 run;
 
