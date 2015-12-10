@@ -30,3 +30,63 @@ run;
 
 proc contents data=work.newpacks;
 run;
+
+proc print data=sashelp.shoes (obs=30);
+run;
+
+proc freq data=sashelp.shoes order=freq;
+	table region;
+run;
+
+proc sort data=sashelp.shoes
+	out=work.shoes;
+	by inventory;
+run;
+
+proc compare base=sashelp.shoes
+	compare=work.shoes;
+run;
+
+data GeekWeek;
+	input name $ finished;
+	datalines;
+	Gigi 1
+	David 2
+	Selam 3
+	;
+run;
+
+data Marathon;
+	input name $ place prize $;
+	datalines;
+	David 1 gold
+	nick 2 silver
+	mike 3 broze
+	adam 4 copper
+	;
+run;
+
+title1 'Orion Star Sales Staff';
+title2 'Salary Report';
+footnote1 'Confidential';
+
+proc print data=orion.sales;
+	var Employee_ID Last_Name Salary;
+run;
+title;
+footnote;
+
+title1'Employees id';
+
+proc print data=orion.sales;
+	var employee_ID;
+run;
+title;
+
+
+
+
+
+
+
+

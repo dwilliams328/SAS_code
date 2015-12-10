@@ -25,7 +25,7 @@ proc print data=orion.sales;
 	where country='AU' & salary<30000;
 run;
 
-		/*this is a 'not in' example*/
+		/*this is a 'not in ('')' example*/
 proc print data=orion.sales;
 	where country not in ('US');
 run;
@@ -36,7 +36,11 @@ proc print data=orion.sales;
 run;
 		/*another simple example of retrieving a single value outcome.*/
 proc print data=orion.sales;
-	where country ='US';
+	where country not='US';
+run;
+
+proc print data=orion.sales noobs;
+	where country='US';
 run;
 
 		/*following statement shows all obs that has AU as country and
@@ -120,7 +124,7 @@ run;
 		/*sort by gender and country and create data set in work*/
 proc sort data=orion.sales
           out=work.sorted;
-   by gender country;
+   by gender country;*All males from the US doesn't show. why??;
 run;
 		/*must be the first variable in the sort statement to group the results by */
 proc print data=work.sorted; 
@@ -131,7 +135,7 @@ It selects and sorts only the required observations.*/
 proc sort data=orion.sales
 	  out=work.sales3;
    by Country descending Salary;
-   where salary<25500; /*Added statement*/
+   *where salary<25500; /*Added statement*/
 run;
 
 proc print data=work.sales3 noobs;
@@ -191,7 +195,88 @@ proc print data=work.duplicates;
 
 run;
 
+/*change the variables' data set name label must be in the proc print statement
+	as well as a label statement identifing the variable to change. syntax below*/
+	/**/
+proc sort data=orion.sales
+	out=sorted_sales;
+	by gender employee_id;
+run;
+				
+proc print data=sorted_sales label;*proc print--must add label statement to display desired labels;
+	var employee_id first_name Last_name gender;
+	label employee_id='Employee #'
+		first_name='First Name'
+		last_name='Last Name'
+		gender='Sex';
+	by gender;
+run;
+		/*'SPLIT=' allows line breaks in column heading. add a character within
+		the split quotations and then add that specific character within the variables
+		new name in the label statement.*/
+proc print data=orion.sales split='*' noobs;/*proc print recognize split= and label to print labels. */
+	var last_name salary;
+	label employee_id='Sales ID'
+		Last_name='Last*Name'
+		salary='Annual*Salary';
+	id employee_id;	
+run;
 
+		/*Enhancing Reports level 1*/
+title1 'Australian Sales Employees';
+title2 'Senior Sales Representatives';
+footnote1 'Job_Title: Sales Rep.IV';
+
+proc print data=orion.sales noobs;
+   where Country='AU' and 
+         Job_Title contains 'Rep. IV';
+	var employee_id first_name Last_name gender salary;
+run;
+title;
+footnote;
+		/*Enhancing Reports level 2*/
+title 'Entry-level Sales Representatives';
+footnote 'Job_Title: Sales Rep. I';
+
+proc print data=orion.sales noobs split='*';
+   where Country='US' and 
+         Job_Title='Sales Rep. I';
+   var Employee_ID First_Name Last_Name Salary;
+   label Employee_ID= 'Employee*ID'
+   	first_name='First*Name'
+   	last_name='Last*Name'
+   	salary='Annual*Salary';
+run;
+
+title;
+footnote;
+		/*Enhancing Reports Challenge*/
+proc sort data=orion.employee_addresses 
+          out=work.address;
+   where Country='US';
+   by State City Employee_Name;
+run;
+
+title "US Employees by State";
+proc print data=work.address noobs split=' ';
+   var Employee_ID Employee_Name 
+       City Postal_Code;
+   label Employee_ID='Employee ID'
+         Employee_Name='Name'
+         Postal_Code='Zip Code';
+   by State;
+run;
+title;
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
 
 
